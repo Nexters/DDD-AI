@@ -1,8 +1,9 @@
 from fastapi import FastAPI, Response
 
 from dto.request_dto import ChatCommonRequest
+from llm.model import llm_classify_chat
 
-app = FastAPI()
+app = FastAPI(swagger_ui_parameters={"syntaxHighlight": False})
 
 
 @app.get("/health_check")
@@ -12,7 +13,7 @@ def health_check():
 
 @app.post("/api/v1/classify/chat")
 def classify_chat(req: ChatCommonRequest):
-    pass
+    return llm_classify_chat(req.chat)
 
 
 if __name__ == "__main__":
