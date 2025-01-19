@@ -47,3 +47,25 @@ def llm_reply_general_chat(question: str):
         return {
             "answer": "헉!! 답변하는 과정에서 오류가 발생했다냥😿 미안하다냥...🙀",
         }
+
+
+def llm_reply_tarot_chat(
+        question: str,
+        tarot_card: str #TODO convert to enum
+):
+    parser = PydanticOutputParser(pydantic_object=AnswerCommonDto)
+    chain = get_basic_prompt_template(reply_general_question_prompt()) | llm | parser
+
+    try:
+        return chain.invoke({
+            "question": f"""
+                뽑은 카드: {tarot_card}
+                질문: {question}
+            """,
+            "format": parser.get_format_instructions()
+        })
+    except Exception as e:
+        logging.error(f"An error occurred. error: {e}")
+        return {
+            "answer": "헉!! 답변하는 과정에서 오류가 발생했다냥😿 미안하다냥...🙀",
+        }
