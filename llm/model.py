@@ -8,7 +8,7 @@ from langchain_openai import ChatOpenAI
 from dto.llm_dto import ClassificationChatTypeDto, ChatType, AnswerCommonDto
 from dto.response_dto import InternalErrorResponse
 from dto.enums.tarot_cards import TarotCard
-from prompt.prompt import get_basic_prompt_template, classify_chat_type_prompt, reply_general_question_prompt
+from prompt.prompt import get_basic_prompt_template, classify_chat_type_prompt, reply_general_question_prompt, reply_tarot_question_prompt
 
 set_llm_cache(InMemoryCache())
 
@@ -54,7 +54,7 @@ def llm_reply_tarot_chat(
         tarot_card: TarotCard
 ):
     parser = PydanticOutputParser(pydantic_object=AnswerCommonDto)
-    chain = get_basic_prompt_template(reply_general_question_prompt()) | llm | parser
+    chain = get_basic_prompt_template(reply_tarot_question_prompt()) | llm | parser
 
     try:
         return chain.invoke({
