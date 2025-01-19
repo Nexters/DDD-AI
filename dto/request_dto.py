@@ -1,4 +1,5 @@
 from pydantic import BaseModel
+from dto.enums.tarot_cards import TarotCard
 
 
 class ChatCommonRequest(BaseModel):
@@ -6,4 +7,4 @@ class ChatCommonRequest(BaseModel):
 
 
 class ChatWithTarotCardCommonRequest(ChatCommonRequest):
-    tarot_card: str #TODO convert to enum
+    tarot_card: TarotCard
