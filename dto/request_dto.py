@@ -6,5 +6,4 @@ class ChatCommonRequest(BaseModel):
 
 
 class ChatWithTarotCardCommonRequest(ChatCommonRequest):
-    chat: str
     tarot_card: str #TODO convert to enum
