@@ -8,6 +8,8 @@ from langchain_core.runnables import RunnableWithMessageHistory
 class ChatHistory:
     history: ChatMessageHistory
     updated_date: datetime
+    _MAX_HISTORY_LENGTH = 6
+    _REMOVE_LATEST_MESSAGES_SIZE = 2
 
     def __init__(self):
         self.history = ChatMessageHistory()
@@ -19,7 +21,13 @@ class ChatHistory:
         return self.history
 
     def trim_history(self):
-        self.history.messages = self.history.messages[-3:]
+        if len(self.history.messages) > self._MAX_HISTORY_LENGTH:
+            self.history.messages = self.history.messages[-self._MAX_HISTORY_LENGTH:]
+
+    def remove_latest_message(self):
+        if self.history.messages:
+            self.history.messages = self.history.messages[:-self._REMOVE_LATEST_MESSAGES_SIZE] if (
+                    len(self.history.messages) >= self._REMOVE_LATEST_MESSAGES_SIZE) else []
 
     def is_outdated_hours(self, hours) -> bool:
         return datetime.now() - self.updated_date > timedelta(hours=hours)
@@ -39,6 +47,12 @@ def remove_session_history(session_id: str):
     if session_id in store:
         store.pop(session_id)
     return
+
+
+def remove_latest_message_history(session_id: str):
+    if session_id not in store:
+        return
+    store[session_id].remove_latest_message()
 
 
 def get_history_chain(chain):

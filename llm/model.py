@@ -1,18 +1,14 @@
 import logging
 
-from langchain.globals import set_llm_cache
-from langchain_community.cache import InMemoryCache
 from langchain_core.output_parsers import PydanticOutputParser
 from langchain_openai import ChatOpenAI
 
 from dto.enums.tarot_cards import TarotCard
 from dto.llm_dto import ClassificationChatTypeDto, ChatType, AnswerCommonDto
 from dto.response_dto import InternalErrorResponse
-from llm.chat_history import get_history_chain
+from llm.chat_history import get_history_chain, remove_latest_message_history
 from prompt.prompt import get_basic_prompt_template, classify_chat_type_prompt, reply_general_question_prompt, \
     reply_inappropriate_question_prompt, reply_tarot_question_prompt
-
-set_llm_cache(InMemoryCache())
 
 llm = ChatOpenAI(
     model="gpt-4o-mini",
@@ -27,10 +23,12 @@ def llm_classify_chat(question: str, chat_room_id: str):
     history_chain = get_history_chain(chain) | parser
 
     try:
-        return history_chain.invoke({
+        result = history_chain.invoke({
             "question": question,
             "format": parser.get_format_instructions()
         }, config={"configurable": {"session_id": chat_room_id}})
+        remove_latest_message_history(session_id=chat_room_id)
+        return result
     except Exception as e:
         logging.error(f"An error occurred. error: {e}")
         return {
