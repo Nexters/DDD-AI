@@ -6,7 +6,9 @@ from langchain_core.output_parsers import PydanticOutputParser
 from langchain_openai import ChatOpenAI
 
 from dto.llm_dto import ClassificationChatTypeDto, ChatType, AnswerCommonDto
-from prompt.prompt import get_basic_prompt_template, classify_chat_type_prompt, reply_general_question_prompt
+from dto.response_dto import InternalErrorResponse
+from dto.enums.tarot_cards import TarotCard
+from prompt.prompt import get_basic_prompt_template, classify_chat_type_prompt, reply_general_question_prompt, reply_tarot_question_prompt
 
 set_llm_cache(InMemoryCache())
 
@@ -44,6 +46,24 @@ def llm_reply_general_chat(question: str):
         })
     except Exception as e:
         logging.error(f"An error occurred. error: {e}")
-        return {
-            "answer": "헉!! 답변하는 과정에서 오류가 발생했다냥😿 미안하다냥...🙀",
-        }
+        return InternalErrorResponse
+
+
+def llm_reply_tarot_chat(
+        question: str,
+        tarot_card: TarotCard
+):
+    parser = PydanticOutputParser(pydantic_object=AnswerCommonDto)
+    chain = get_basic_prompt_template(reply_tarot_question_prompt()) | llm | parser
+
+    try:
+        return chain.invoke({
+            "question": f"""
+                뽑은 카드: {tarot_card.get_value()}
+                질문: {question}
+            """,
+            "format": parser.get_format_instructions()
+        })
+    except Exception as e:
+        logging.error(f"An error occurred. error: {e}")
+        return InternalErrorResponse
