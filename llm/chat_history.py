@@ -33,8 +33,12 @@ class ChatHistory:
         return datetime.now() - self.updated_date > timedelta(hours=hours)
 
 
-store = {
+store: dict[str, ChatHistory] = {
 }
+
+
+def get_all_session_histories():
+    return store.items()
 
 
 def get_session_history(session_id: str) -> BaseChatMessageHistory:

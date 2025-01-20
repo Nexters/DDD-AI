@@ -1,9 +1,19 @@
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI, Response
 
 from dto.request_dto import ChatCommonRequest, ChatWithTarotCardCommonRequest
 from llm.model import llm_classify_chat, llm_reply_general_chat, llm_reply_tarot_chat, llm_reply_inappropriate_chat
+from scheduler.history_scheduler import scheduler
 
-app = FastAPI(swagger_ui_parameters={"syntaxHighlight": False})
+
+@asynccontextmanager
+async def lifespan(_app):
+    scheduler.start()
+    yield
+
+
+app = FastAPI(swagger_ui_parameters={"syntaxHighlight": False}, lifespan=lifespan)
 
 
 @app.get("/health_check")
