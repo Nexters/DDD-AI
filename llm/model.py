@@ -54,7 +54,7 @@ def llm_reply_general_chat(question: str, chat_room_id: str):
 
 def llm_reply_tarot_chat(
         # TODO 논의 필요
-        # question: str,
+        question: str,
         chat_room_id: str,
         tarot_card: TarotCard
 ):
@@ -66,6 +66,7 @@ def llm_reply_tarot_chat(
         return history_chain.invoke({
             "question": f"""
                 뽑은 카드: {tarot_card.get_value()}
+                질문: {question}
             """,
             "format": parser.get_format_instructions()
         }, config={"configurable": {"session_id": chat_room_id}})

@@ -41,7 +41,7 @@ def reply_general_chat(req: ChatCommonRequest):
 def reply_tarot_chat(req: ChatWithTarotCardCommonRequest):
     return llm_reply_tarot_chat(
         # TODO 논의 필요
-        # question=req.chat,
+        question=req.chat,
         chat_room_id=req.chat_room_id,
         tarot_card=req.tarot_card
     )
