@@ -29,6 +29,11 @@ class ChatHistory:
             self.history.messages = self.history.messages[:-self._REMOVE_LATEST_MESSAGES_SIZE] if (
                     len(self.history.messages) >= self._REMOVE_LATEST_MESSAGES_SIZE) else []
 
+    def get_latest_question(self):
+        if self.history.messages and len(self.history.messages) > 1:
+            return self.history.messages[-2]
+        return None
+
     def is_outdated_hours(self, hours) -> bool:
         return datetime.now() - self.updated_date > timedelta(hours=hours)
 
@@ -57,6 +62,12 @@ def remove_latest_message_history(session_id: str):
     if session_id not in store:
         return
     store[session_id].remove_latest_message()
+
+
+def get_latest_question(session_id: str):
+    if session_id not in store:
+        return None
+    return store[session_id].get_latest_question()
 
 
 def get_history_chain(chain):
