@@ -8,7 +8,7 @@ from dto.llm_dto import ClassificationChatTypeDto, ChatType, AnswerCommonDto
 from dto.response_dto import InternalErrorResponse
 from llm.chat_history import get_history_chain, remove_latest_message_history
 from prompt.prompt import get_basic_prompt_template, classify_chat_type_prompt, reply_general_question_prompt, \
-    reply_inappropriate_question_prompt, reply_tarot_question_prompt
+    reply_inappropriate_question_prompt, reply_tarot_question_prompt, reply_question_question_prompt
 
 llm = ChatOpenAI(
     model="gpt-4o-mini",
@@ -40,6 +40,20 @@ def llm_classify_chat(question: str, chat_room_id: str):
 def llm_reply_general_chat(question: str, chat_room_id: str):
     parser = PydanticOutputParser(pydantic_object=AnswerCommonDto)
     chain = get_basic_prompt_template(reply_general_question_prompt()) | llm
+    history_chain = get_history_chain(chain) | parser
+
+    try:
+        return history_chain.invoke({
+            "question": question,
+            "format": parser.get_format_instructions()
+        }, config={"configurable": {"session_id": chat_room_id}})
+    except Exception as e:
+        logging.error(f"An error occurred. error: {e}")
+        return InternalErrorResponse
+
+def llm_reply_question_chat(question: str, chat_room_id: str):
+    parser = PydanticOutputParser(pydantic_object=AnswerCommonDto)
+    chain = get_basic_prompt_template(reply_question_question_prompt()) | llm
     history_chain = get_history_chain(chain) | parser
 
     try:
