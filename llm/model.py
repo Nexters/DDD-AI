@@ -4,7 +4,7 @@ from langchain_core.output_parsers import PydanticOutputParser
 from langchain_openai import ChatOpenAI
 
 from dto.enums.tarot_cards import TarotCard
-from dto.llm_dto import ClassificationChatTypeDto, ChatType, AnswerCommonDto
+from dto.llm_dto import ClassificationChatTypeDto, ChatType, AnswerCommonDto, TarotAnswerDto
 from dto.response_dto import InternalErrorResponse
 from llm.chat_history import get_history_chain, remove_latest_message_history
 from prompt.prompt import get_basic_prompt_template, classify_chat_type_prompt, reply_general_question_prompt, \
@@ -53,11 +53,12 @@ def llm_reply_general_chat(question: str, chat_room_id: str):
 
 
 def llm_reply_tarot_chat(
+        # TODO 논의 필요
         question: str,
         chat_room_id: str,
         tarot_card: TarotCard
 ):
-    parser = PydanticOutputParser(pydantic_object=AnswerCommonDto)
+    parser = PydanticOutputParser(pydantic_object=TarotAnswerDto)
     chain = get_basic_prompt_template(reply_tarot_question_prompt()) | llm
     history_chain = get_history_chain(chain) | parser
 
