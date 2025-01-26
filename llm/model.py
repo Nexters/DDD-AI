@@ -6,7 +6,7 @@ from langchain_openai import ChatOpenAI
 from dto.enums.tarot_cards import TarotCard
 from dto.llm_dto import ClassificationChatTypeDto, ChatType, AnswerCommonDto
 from dto.response_dto import InternalErrorResponse
-from llm.chat_history import get_history_chain, remove_latest_message_history
+from llm.chat_history import get_history_chain, remove_latest_message_history, get_latest_question
 from prompt.prompt import get_basic_prompt_template, classify_chat_type_prompt, reply_general_question_prompt, \
     reply_inappropriate_question_prompt, reply_tarot_question_prompt, reply_question_question_prompt
 
@@ -67,19 +67,19 @@ def llm_reply_question_chat(question: str, chat_room_id: str):
 
 
 def llm_reply_tarot_chat(
-        question: str,
         chat_room_id: str,
         tarot_card: TarotCard
 ):
     parser = PydanticOutputParser(pydantic_object=AnswerCommonDto)
     chain = get_basic_prompt_template(reply_tarot_question_prompt()) | llm
     history_chain = get_history_chain(chain) | parser
+    latest_question = get_latest_question(session_id=chat_room_id)
 
     try:
         return history_chain.invoke({
             "question": f"""
                 뽑은 카드: {tarot_card.get_value()}
-                질문: {question}
+                질문: {latest_question.content}
             """,
             "format": parser.get_format_instructions()
         }, config={"configurable": {"session_id": chat_room_id}})
