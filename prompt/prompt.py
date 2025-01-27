@@ -124,7 +124,7 @@ def reply_tarot_question_prompt():
 
 ---
 
-### 답변 포맷:
+### 답변 형식:
 {format}
 
 ---
