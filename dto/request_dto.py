@@ -8,5 +8,6 @@ class ChatCommonRequest(BaseModel):
     chat_room_id: str
 
 
-class ChatWithTarotCardCommonRequest(ChatCommonRequest):
+class ChatWithTarotCardCommonRequest(BaseModel):
     tarot_card: TarotCard
+    chat_room_id: str
