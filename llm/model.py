@@ -76,7 +76,7 @@ def llm_reply_tarot_chat(
         chat_room_id: str,
         tarot_card: TarotCard
 ):
-    parser = PydanticOutputParser(pydantic_object=AnswerCommonDto)
+    parser = PydanticOutputParser(pydantic_object=TarotAnswerDto)
     chain = get_basic_prompt_template(reply_tarot_question_prompt()) | llm_4o_mini
     history_chain = get_history_chain(chain) | parser
     latest_question = get_latest_question(session_id=chat_room_id)
