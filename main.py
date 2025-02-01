@@ -3,7 +3,10 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI, Response
 
 from dto.request_dto import ChatCommonRequest, ChatWithTarotCardCommonRequest
-from llm.model import llm_classify_chat, llm_reply_general_chat, llm_reply_tarot_chat, llm_reply_inappropriate_chat, llm_reply_question_chat
+from dto.response_dto import ChatGraphResponse
+from llm.chat_graph import get_chat_graph
+from llm.model import llm_classify_chat, llm_reply_general_chat, llm_reply_tarot_chat, llm_reply_inappropriate_chat, \
+    llm_reply_question_chat
 from scheduler.history_scheduler import scheduler
 
 
@@ -14,6 +17,7 @@ async def lifespan(_app):
 
 
 app = FastAPI(swagger_ui_parameters={"syntaxHighlight": False}, lifespan=lifespan)
+chat_graph = get_chat_graph()
 
 
 @app.get("/health_check")
@@ -59,6 +63,17 @@ def reply_tarot_chat(req: ChatCommonRequest):
         question=req.chat,
         chat_room_id=req.chat_room_id
     )
+
+
+@app.post("/api/v1/chat")
+def chat_with_graph(req: ChatCommonRequest):
+    result = chat_graph.invoke({
+        "user_chat": req.chat,
+        "user_room_id": req.chat_room_id
+    })
+    classification = result["classification"]
+    answer = result["ai_chat"] if "ai_chat" in result else "ERROR"
+    return ChatGraphResponse(classification=classification, answer=answer)
 
 
 if __name__ == "__main__":
