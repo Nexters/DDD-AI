@@ -52,7 +52,7 @@ def llm_reply_general_chat(question: str, chat_room_id: str):
         }, config={"configurable": {"session_id": chat_room_id}})
     except Exception as e:
         logging.error(f"An error occurred. error: {e}")
-        return InternalErrorResponse
+        return InternalErrorResponse()
 
 
 def llm_reply_question_chat(question: str, chat_room_id: str):
@@ -67,7 +67,7 @@ def llm_reply_question_chat(question: str, chat_room_id: str):
         }, config={"configurable": {"session_id": chat_room_id}})
     except Exception as e:
         logging.error(f"An error occurred. error: {e}")
-        return InternalErrorResponse
+        return InternalErrorResponse()
 
 
 def llm_reply_tarot_chat(
@@ -89,7 +89,7 @@ def llm_reply_tarot_chat(
         }, config={"configurable": {"session_id": chat_room_id}})
     except Exception as e:
         logging.error(f"An error occurred. error: {e}")
-        return InternalErrorResponse
+        return InternalErrorResponse()
 
 
 def llm_reply_inappropriate_chat(question: str, chat_room_id: str):
@@ -104,4 +104,4 @@ def llm_reply_inappropriate_chat(question: str, chat_room_id: str):
         }, config={"configurable": {"session_id": chat_room_id}})
     except Exception as e:
         logging.error(f"An error occurred. error: {e}")
-        return InternalErrorResponse
+        return InternalErrorResponse()
