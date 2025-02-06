@@ -9,6 +9,7 @@ from dto.response_dto import ChatGraphResponse
 from llm.chat_graph import get_chat_graph
 from llm.model import llm_classify_chat, llm_reply_general_chat, llm_reply_tarot_chat, llm_reply_inappropriate_chat, \
     llm_reply_question_chat
+from notification.discord_notification import notify_common_error
 from scheduler.history_scheduler import scheduler
 
 
@@ -23,6 +24,7 @@ app = FastAPI(swagger_ui_parameters={"syntaxHighlight": False}, lifespan=lifespa
 
 @app.exception_handler(Exception)
 async def validation_exception_handler(request: Request, exc: Exception):
+    notify_common_error(request, exc)
     return JSONResponse(
         status_code=500,
         content={
@@ -39,6 +41,7 @@ chat_graph = get_chat_graph()
 
 @app.get("/health_check")
 def health_check():
+    raise Exception("Test exception")
     return Response(status_code=200)
 
 
