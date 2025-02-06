@@ -41,7 +41,6 @@ chat_graph = get_chat_graph()
 
 @app.get("/health_check")
 def health_check():
-    raise Exception("Test exception")
     return Response(status_code=200)
 
 
