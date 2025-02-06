@@ -1,6 +1,8 @@
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, Response
+from starlette.requests import Request
+from starlette.responses import JSONResponse
 
 from dto.request_dto import ChatCommonRequest, ChatWithTarotCardCommonRequest
 from dto.response_dto import ChatGraphResponse
@@ -17,6 +19,21 @@ async def lifespan(_app):
 
 
 app = FastAPI(swagger_ui_parameters={"syntaxHighlight": False}, lifespan=lifespan)
+
+
+@app.exception_handler(Exception)
+async def validation_exception_handler(request: Request, exc: Exception):
+    return JSONResponse(
+        status_code=500,
+        content={
+            "message": (
+                f"Failed method {request.method} at URL {request.url}."
+                f" Exception message is {exc!r}."
+            )
+        },
+    )
+
+
 chat_graph = get_chat_graph()
 
 
