@@ -5,8 +5,9 @@ from langchain_openai import ChatOpenAI
 
 from dto.enums.tarot_cards import TarotCard
 from dto.llm_dto import ClassificationChatTypeDto, ChatType, AnswerCommonDto, TarotAnswerDto
-from dto.response_dto import InternalErrorResponse
+from dto.response_dto import InternalErrorCommonAnswerResponse
 from llm.chat_history import get_history_chain, remove_latest_message_history, get_latest_question
+from notification.discord_notification import notify_llm_error
 from prompt.prompt import get_basic_prompt_template, classify_chat_type_prompt, reply_general_question_prompt, \
     reply_inappropriate_question_prompt, reply_tarot_question_prompt, reply_question_question_prompt
 
@@ -36,7 +37,8 @@ def llm_classify_chat(question: str, chat_room_id: str):
         remove_latest_message_history(session_id=chat_room_id)
         return result
     except Exception as e:
-        logging.error(f"An error occurred. error: {e}")
+        logging.error(f"An error occurred in llm_classify_chat. error: {e}")
+        notify_llm_error("llm_classify_chat", question, chat_room_id, e)
         return ClassificationChatTypeDto(type=ChatType.ERROR, description=f"An error occurred. error: {e}")
 
 
@@ -51,8 +53,9 @@ def llm_reply_general_chat(question: str, chat_room_id: str):
             "format": parser.get_format_instructions()
         }, config={"configurable": {"session_id": chat_room_id}})
     except Exception as e:
-        logging.error(f"An error occurred. error: {e}")
-        return InternalErrorResponse
+        logging.error(f"An error occurred in llm_reply_general_chat. error: {e}")
+        notify_llm_error("llm_reply_general_chat", question, chat_room_id, e)
+        return InternalErrorCommonAnswerResponse()
 
 
 def llm_reply_question_chat(question: str, chat_room_id: str):
@@ -66,8 +69,9 @@ def llm_reply_question_chat(question: str, chat_room_id: str):
             "format": parser.get_format_instructions()
         }, config={"configurable": {"session_id": chat_room_id}})
     except Exception as e:
-        logging.error(f"An error occurred. error: {e}")
-        return InternalErrorResponse
+        logging.error(f"An error occurred in llm_reply_question_chat. error: {e}")
+        notify_llm_error("llm_reply_question_chat", question, chat_room_id, e)
+        return InternalErrorCommonAnswerResponse()
 
 
 def llm_reply_tarot_chat(
@@ -88,8 +92,17 @@ def llm_reply_tarot_chat(
             "format": parser.get_format_instructions()
         }, config={"configurable": {"session_id": chat_room_id}})
     except Exception as e:
-        logging.error(f"An error occurred. error: {e}")
-        return InternalErrorResponse
+        logging.error(f"An error occurred in llm_reply_tarot_chat. error: {e}")
+        notify_llm_error("llm_reply_tarot_chat", latest_question.content, chat_room_id, e)
+        return TarotAnswerDto(
+            type="ERROR",
+            description_of_card="An error occurred.",
+            analysis="An error occurred.",
+            advice="An error occurred.",
+            summary_of_description_of_card="An error occurred.",
+            summary_of_analysis="An error occurred.",
+            summary_of_advice="An error occurred."
+        )
 
 
 def llm_reply_inappropriate_chat(question: str, chat_room_id: str):
@@ -103,5 +116,6 @@ def llm_reply_inappropriate_chat(question: str, chat_room_id: str):
             "format": parser.get_format_instructions()
         }, config={"configurable": {"session_id": chat_room_id}})
     except Exception as e:
-        logging.error(f"An error occurred. error: {e}")
-        return InternalErrorResponse
+        logging.error(f"An error occurred in llm_reply_inappropriate_chat. error: {e}")
+        notify_llm_error("llm_reply_inappropriate_chat", question, chat_room_id, e)
+        return InternalErrorCommonAnswerResponse()
