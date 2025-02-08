@@ -20,7 +20,7 @@ llm_4o = ChatOpenAI(
 llm_4o_mini = ChatOpenAI(
     model="gpt-4o-mini",
     temperature=0.2,
-    max_retries=1,
+    max_retries=2,
 ).with_fallbacks([llm_4o])
 
 
@@ -55,7 +55,6 @@ def llm_reply_general_chat(question: str, chat_room_id: str):
     except Exception as e:
         logging.error(f"An error occurred in llm_reply_general_chat. error: {e}")
         notify_llm_error("llm_reply_general_chat", question, chat_room_id, e)
-        return InternalErrorCommonAnswerResponse()
 
 
 def llm_reply_question_chat(question: str, chat_room_id: str):
@@ -71,7 +70,6 @@ def llm_reply_question_chat(question: str, chat_room_id: str):
     except Exception as e:
         logging.error(f"An error occurred in llm_reply_question_chat. error: {e}")
         notify_llm_error("llm_reply_question_chat", question, chat_room_id, e)
-        return InternalErrorCommonAnswerResponse()
 
 
 def llm_reply_tarot_chat(
@@ -94,15 +92,6 @@ def llm_reply_tarot_chat(
     except Exception as e:
         logging.error(f"An error occurred in llm_reply_tarot_chat. error: {e}")
         notify_llm_error("llm_reply_tarot_chat", latest_question.content, chat_room_id, e)
-        return TarotAnswerDto(
-            type="ERROR",
-            description_of_card="An error occurred.",
-            analysis="An error occurred.",
-            advice="An error occurred.",
-            summary_of_description_of_card="An error occurred.",
-            summary_of_analysis="An error occurred.",
-            summary_of_advice="An error occurred."
-        )
 
 
 def llm_reply_inappropriate_chat(question: str, chat_room_id: str):
@@ -118,4 +107,3 @@ def llm_reply_inappropriate_chat(question: str, chat_room_id: str):
     except Exception as e:
         logging.error(f"An error occurred in llm_reply_inappropriate_chat. error: {e}")
         notify_llm_error("llm_reply_inappropriate_chat", question, chat_room_id, e)
-        return InternalErrorCommonAnswerResponse()
