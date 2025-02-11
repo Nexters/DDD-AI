@@ -5,7 +5,6 @@ from langchain_openai import ChatOpenAI
 
 from dto.enums.tarot_cards import TarotCard
 from dto.llm_dto import ClassificationChatTypeDto, ChatType, AnswerCommonDto, TarotAnswerDto
-from dto.response_dto import InternalErrorCommonAnswerResponse
 from llm.chat_history import get_history_chain, remove_latest_message_history, get_latest_question
 from notification.discord_notification import notify_llm_error
 from prompt.prompt import get_basic_prompt_template, classify_chat_type_prompt, reply_general_question_prompt, \

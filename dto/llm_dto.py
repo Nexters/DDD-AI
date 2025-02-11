@@ -23,21 +23,35 @@ class AnswerCommonDto(BaseModel):
                         example="좋은 아침이다냥~ 오늘도 햇살처럼 따뜻한 하루가 되길 바란다냥!! 혹시 오늘 어떤 계획이 있나냥!? 아니면 타로 카드로 오늘의 운세를 알아보는건 어떠냥? 궁금한 거 있으면 언제든지 말해달라냥! 🐾✨")
 
 
+class TarotCategory(Enum):
+    LOVE = "연애"
+    CAREER = "직장/진로"
+    FINANCE = "재물/금전"
+    HEALTH = "건강"
+    FAMILY = "가족"
+    FRIENDSHIP = "우정"
+    EDUCATION = "학업/공부"
+    TRAVEL = "여행"
+    LUCK = "운세"
+    SELF_GROWTH = "자기계발"
+    DECISION_MAKING = "선택/결정"
+    RELATIONSHIP_PROBLEM = "대인관계"
+    ETC = "기타"
+
+
 class TarotAnswerDto(BaseModel):
-    type: str = Field(description="질문의 유형을 나타냅니다.",
-                      example="연애, 애정, 금전, 학업 등")
-    description_of_card: str = Field(description="타로 카드의 의미를 설명합니다.",
-                                     example="마법사 카드는 새로운 시작과 창조적인 에너지를 상징한다냥!")
+    type: TarotCategory = Field(description="질문의 유형을 나타냅니다.",
+                                example="연애")
+    description_of_card: str = Field(description="타로 카드의 의미를 두 문장으로 설명합니다.",
+                                     example="탑 카드는 갑작스러운 변화와 충격을 상징해. 기존의 구조가 무너지고 새로운 시작을 알리는 카드라냥!")
     analysis: str = Field(description="프롬프트와 카드를 참고하여 질문에 답변합니다.",
-                          example="함께라면 서로의 힘을 잘 활용해서 멋진 관계를 만들어갈 수 있을 거야. 마법사처럼 너희의 의사소통과 이해가 잘 이루어진다면, 오래오래 만날 수 있을 것 같아! 서로의 마음을 잘 표현하고, 함께하는 시간을 소중히 여기는 게 중요해. 그러니 긍정적인 에너지를 잃지 말고, 서로를 믿고 지지해주면 좋겠어냥! 💖✨")
-    advice: str = Field(description="타로 카드를 기반으로 한 조언을 제공합니다.",
-                        example="오늘은 서로의 의견을 존중하고, 서로를 이해하는 게 중요할 거 같다냥. 서로의 생각과 마음을 솔직하게 표현하면서, 서로를 더 잘 알아가는 시간을 가지면 좋을 거 같아냥. 또한 서로를 응원하고 지지해주는 마음을 잊지 말고, 서로에게 힘이 되어주는 관계를 만들어나가면 좋겠다냥! 🌟💕")
-    summary_of_description_of_card: str = Field(description="타로 카드의 의미를 한 문장으로 요약합니다.",
-                                                example="")
-    summary_of_analysis: str = Field(description="분석을 한 문장으로 요약합니다.",
-                                     example="")
-    summary_of_advice: str = Field(description="조언을 한 문장으로 요약합니다.",
-                                   example="")
+                          example="탑 카드가 나왔다는 건, 재회에 있어 예상치 못한 변화가 있을 수 있다는 뜻이야. 과거의 관계에서 어떤 갈등이나 어려움이 있었던 것 같아. 하지만 이 변화가 새로운 기회를 가져올 수도 있으니, 긍정적인 마음가짐을 잃지 않는 게 중요해! 서로의 마음을 다시 확인하고, 새로운 시작을 할 수 있는 기회가 올지도 몰라!😽")
+    advice: str = Field(description="타로 카드를 기반으로 조언을 제공합니다.",
+                        example="지금은 과거의 상처를 치유하고, 자신을 돌아보는 시간이 필요할 것 같아. 그 사람과의 재회를 원한다면, 서로의 감정을 솔직하게 나누고, 새로운 관계를 만들어가는 것이 중요해. 변화는 두려울 수 있지만, 그 속에서 새로운 가능성을 찾아보면 좋겠어냥! 🌟💕")
+    summary_of_description_of_card: str = Field(description="타로 카드의 의미를 한 문장으로 요약합니다. 단순히 카드의 이름만을 요약하지 않고, 의미를 포함해야 합니다.")
+    summary_of_analysis: str = Field(description="질문에 답변한 내용을 한 문장으로 요약합니다. 단순히 답변을 되풀이 하지 않고, 새롭게 요약해야 합니다.")
+    summary_of_advice: str = Field(description="타로 카드를 기반으로 제공한 조언을 한 문장으로 요약합니다. 단순히 조언을 되풀이 하지 않고, 새롭게 요약해야 합니다.")
+    comprehensive_summary: str = Field(description="질문에 대한 답변과 조언을 함께 요약합니다. 요약은 한 문장으로 작성해야 하며, 답변과 조언을 모두 포함해야 합니다.")
 
 
 class ChatGraphState(TypedDict):
