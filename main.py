@@ -4,11 +4,11 @@ from fastapi import FastAPI, Response
 from starlette.requests import Request
 from starlette.responses import JSONResponse
 
-from dto.request_dto import ChatCommonRequest, ChatWithTarotCardCommonRequest, ChatRoomRequest
+from dto.request_dto import ChatCommonRequest, ChatWithTarotCardCommonRequest, ChatRoomRequest, SummarizeQuestionRequest
 from dto.response_dto import ChatGraphResponse
 from llm.chat_graph import get_chat_graph
 from llm.model import llm_classify_chat, llm_reply_general_chat, llm_reply_tarot_chat, llm_reply_inappropriate_chat, \
-    llm_reply_question_chat, llm_suggest_follow_up_question
+    llm_reply_question_chat, llm_suggest_follow_up_question, llm_summarize_question
 from notification.discord_notification import notify_common_error
 from scheduler.history_scheduler import scheduler
 
@@ -98,6 +98,13 @@ def chat_with_graph(req: ChatCommonRequest):
 @app.post("/api/v1/suggest/follow-up-questions")
 def suggest_follow_up_questions(req: ChatRoomRequest):
     return llm_suggest_follow_up_question(req.chat_room_id)
+
+
+@app.post("/api/v1/summarize-question")
+def summarize_question(req: SummarizeQuestionRequest):
+    return llm_summarize_question(
+        question=req.question
+    )
 
 
 if __name__ == "__main__":
