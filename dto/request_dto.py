@@ -16,3 +16,7 @@ class ChatWithTarotCardCommonRequest(BaseModel):
 
 class ChatRoomRequest(BaseModel):
     chat_room_id: str
+
+
+class SummarizeQuestionRequest(BaseModel):
+    question: str
