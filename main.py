@@ -4,11 +4,11 @@ from fastapi import FastAPI, Response
 from starlette.requests import Request
 from starlette.responses import JSONResponse
 
-from dto.request_dto import ChatCommonRequest, ChatWithTarotCardCommonRequest
+from dto.request_dto import ChatCommonRequest, ChatWithTarotCardCommonRequest, ChatRoomRequest
 from dto.response_dto import ChatGraphResponse
 from llm.chat_graph import get_chat_graph
 from llm.model import llm_classify_chat, llm_reply_general_chat, llm_reply_tarot_chat, llm_reply_inappropriate_chat, \
-    llm_reply_question_chat
+    llm_reply_question_chat, llm_suggest_follow_up_question
 from notification.discord_notification import notify_common_error
 from scheduler.history_scheduler import scheduler
 
@@ -77,7 +77,7 @@ def reply_tarot_chat(req: ChatWithTarotCardCommonRequest):
 
 
 @app.post("/api/v1/reply/inappropriate-chat")
-def reply_tarot_chat(req: ChatCommonRequest):
+def reply_inappropriate_chat(req: ChatCommonRequest):
     return llm_reply_inappropriate_chat(
         question=req.chat,
         chat_room_id=req.chat_room_id
@@ -93,6 +93,11 @@ def chat_with_graph(req: ChatCommonRequest):
     classification = result["classification"]
     answer = result["ai_chat"] if "ai_chat" in result else "ERROR"
     return ChatGraphResponse(classification=classification, answer=answer)
+
+
+@app.post("/api/v1/suggest/follow-up-questions")
+def suggest_follow_up_questions(req: ChatRoomRequest):
+    return llm_suggest_follow_up_question(req.chat_room_id)
 
 
 if __name__ == "__main__":

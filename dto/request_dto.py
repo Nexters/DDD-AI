@@ -12,3 +12,7 @@ class ChatCommonRequest(BaseModel):
 class ChatWithTarotCardCommonRequest(BaseModel):
     tarot_card: TarotCard
     chat_room_id: str
+
+
+class ChatRoomRequest(BaseModel):
+    chat_room_id: str

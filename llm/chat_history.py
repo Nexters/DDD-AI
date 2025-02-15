@@ -34,6 +34,11 @@ class ChatHistory:
             return self.history.messages[-2]
         return None
 
+    def get_latest_ai_chat(self):
+        if self.history.messages and len(self.history.messages) > 1:
+            return self.history.messages[-1]
+        return None
+
     def is_outdated_hours(self, hours) -> bool:
         return datetime.now() - self.updated_date > timedelta(hours=hours)
 
@@ -68,6 +73,12 @@ def get_latest_question(session_id: str):
     if session_id not in store:
         return None
     return store[session_id].get_latest_question()
+
+
+def get_latest_ai_chat(session_id: str):
+    if session_id not in store:
+        return None
+    return store[session_id].get_latest_ai_chat()
 
 
 def get_history_chain(chain):
