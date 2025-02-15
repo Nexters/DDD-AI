@@ -4,12 +4,12 @@ from langchain_core.output_parsers import PydanticOutputParser
 from langchain_openai import ChatOpenAI
 
 from dto.enums.tarot_cards import TarotCard
-from dto.llm_dto import ClassificationChatTypeDto, ChatType, AnswerCommonDto, TarotAnswerDto, FollowUpQuestionsDto
+from dto.llm_dto import ClassificationChatTypeDto, ChatType, AnswerCommonDto, TarotAnswerDto, FollowUpQuestionsDto, SummarizeQuestionDto
 from llm.chat_history import get_history_chain, remove_latest_message_history, get_latest_question, get_latest_ai_chat
 from notification.discord_notification import notify_llm_error
 from prompt.prompt import get_history_prompt_template, classify_chat_type_prompt, reply_general_question_prompt, \
     reply_inappropriate_question_prompt, reply_tarot_question_prompt, reply_question_question_prompt, \
-    follow_up_question_prompt, get_basic_prompt_template
+    follow_up_question_prompt, get_basic_prompt_template, summarize_question_prompt
 
 llm_4o = ChatOpenAI(
     model="gpt-4o",
@@ -131,3 +131,18 @@ def llm_suggest_follow_up_question(chat_room_id):
     except Exception as e:
         logging.error(f"An error occurred in llm_suggest_follow_up_question. error: {e}")
         notify_llm_error("llm_suggest_follow_up_question", question, chat_room_id, e)
+
+
+def llm_summarize_question(question: str):
+    summarize_questions_parser = PydanticOutputParser(pydantic_object=SummarizeQuestionDto)
+    chain = get_basic_prompt_template(summarize_question_prompt()) | llm_4o_mini | summarize_questions_parser
+
+    try:
+        return chain.invoke({
+            "question": f"사용자의 질문: {question}",
+            "format": summarize_questions_parser.get_format_instructions()
+        })
+    except Exception as e:
+        logging.error(f"An error occurred in llm_summarize_question. error: {e}")
+        raise e
+        notify_llm_error("llm_summarize_question", question, None, e)
