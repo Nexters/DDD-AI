@@ -58,7 +58,7 @@ def llm_reply_general_chat(question: str, chat_room_id: str):
 
 def llm_reply_question_chat(question: str, chat_room_id: str):
     parser = PydanticOutputParser(pydantic_object=AnswerCommonDto)
-    chain = get_basic_prompt_template(reply_question_question_prompt()) | llm_4o
+    chain = get_basic_prompt_template(reply_question_question_prompt()) | llm_4o_mini
     history_chain = get_history_chain(chain) | parser
 
     try:
