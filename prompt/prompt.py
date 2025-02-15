@@ -27,7 +27,7 @@ BASE_CHARACTER_PROMPT = """
 """
 
 
-def get_basic_prompt_template(prompt):
+def get_history_prompt_template(prompt):
     return ChatPromptTemplate.from_messages(
         [
             (
@@ -35,6 +35,21 @@ def get_basic_prompt_template(prompt):
                 prompt,
             ),
             MessagesPlaceholder(variable_name="chat_history"),
+            (
+                "human",
+                "{question}"
+            )
+        ]
+    )
+
+
+def get_basic_prompt_template(prompt):
+    return ChatPromptTemplate.from_messages(
+        [
+            (
+                "system",
+                prompt,
+            ),
             (
                 "human",
                 "{question}"
@@ -210,9 +225,11 @@ def reply_inappropriate_question_prompt():
 위 프롬프트를 활용하여 사용자의 질문에 대해 알맞게 답변하세요.
     """
 
+
 def follow_up_question_prompt():
     return """
 사용자의 질문과 타로 전문가의 답변을 기반으로 사용자가 할 수 있는 추가 질문을 제안합니다.
+제안되는 질문은 타로로 답변할 수 있는 질문으로 유도해야 합니다.
 
 ---
 
@@ -223,7 +240,9 @@ def follow_up_question_prompt():
 
 ### 필수 지시사항:
 - 사용자의 질문을 기반으로 추가 질문을 제안합니다.
-- 타로 카드에 대한 추가 질문을 유도합니다.    
+- 타로 전문가의 답변을 기반으로 추가 질문을 제안합니다.
+- 타로 카드에 대한 추가 질문을 유도합니다.  
 - 제안하는 모든 질문은 최대 2문장으로 제한합니다.
 - 제안하는 질문은 총 4개입니다.
+- 제안하는 질무은 반말 스타일로 작성합니다.
     """
