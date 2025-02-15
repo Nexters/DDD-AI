@@ -65,3 +65,8 @@ class ChatGraphState(TypedDict):
 class FollowUpQuestionsDto(BaseModel):
     follow_up_question: list[str] = Field(description="사용자의 질문에 대한 꼬리질문을 4개 작성하세요.",
                                           example="""["혹시 이 사람이 이미 내 주변에 있을 가능성도 있을까요?", "구체적으로 언제 만날 수 있을까요?", "제가 무엇을 준비해야 할까요?", "이 사람과의 만남이 제 인생에 어떤 의미가 있을까요?"]""")
+
+
+class SummarizeQuestionDto(BaseModel):
+    summarized_question: str = Field(
+        description="사용자의 질문을 요약하세요.", example="오늘은 어떤 일이 있을까?")
