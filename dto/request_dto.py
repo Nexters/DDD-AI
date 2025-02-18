@@ -20,3 +20,7 @@ class ChatRoomRequest(BaseModel):
 
 class SummarizeQuestionRequest(BaseModel):
     question: str
+
+
+class TestDto(BaseModel):
+    name: str
