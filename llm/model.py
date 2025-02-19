@@ -149,4 +149,4 @@ def llm_summarize_question(question: str):
         })
     except Exception as e:
         logging.error(f"An error occurred in llm_summarize_question. error: {e}")
-        notify_llm_error("llm_summarize_question", question, None, e)
+        notify_llm_error("llm_summarize_question", question, "None", e)
