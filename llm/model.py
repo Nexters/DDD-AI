@@ -37,6 +37,7 @@ def llm_classify_chat(question: str, chat_room_id: str):
         remove_latest_message_history(session_id=chat_room_id)
         return result
     except Exception as e:
+        remove_latest_message_history(session_id=chat_room_id)
         logging.error(f"An error occurred in llm_classify_chat. error: {e}")
         notify_llm_error("llm_classify_chat", question, chat_room_id, e)
         return ClassificationChatTypeDto(type=ChatType.ERROR, description=f"An error occurred. error: {e}")
@@ -53,6 +54,7 @@ def llm_reply_general_chat(question: str, chat_room_id: str):
             "format": parser.get_format_instructions()
         }, config={"configurable": {"session_id": chat_room_id}})
     except Exception as e:
+        remove_latest_message_history(session_id=chat_room_id)
         logging.error(f"An error occurred in llm_reply_general_chat. error: {e}")
         notify_llm_error("llm_reply_general_chat", question, chat_room_id, e)
 
@@ -68,6 +70,7 @@ def llm_reply_question_chat(question: str, chat_room_id: str):
             "format": parser.get_format_instructions()
         }, config={"configurable": {"session_id": chat_room_id}})
     except Exception as e:
+        remove_latest_message_history(session_id=chat_room_id)
         logging.error(f"An error occurred in llm_reply_question_chat. error: {e}")
         notify_llm_error("llm_reply_question_chat", question, chat_room_id, e)
 
@@ -90,6 +93,7 @@ def llm_reply_tarot_chat(
             "format": parser.get_format_instructions()
         }, config={"configurable": {"session_id": chat_room_id}})
     except Exception as e:
+        remove_latest_message_history(session_id=chat_room_id)
         logging.error(f"An error occurred in llm_reply_tarot_chat. error: {e}")
         notify_llm_error("llm_reply_tarot_chat", latest_question.content, chat_room_id, e)
 
@@ -105,6 +109,7 @@ def llm_reply_inappropriate_chat(question: str, chat_room_id: str):
             "format": parser.get_format_instructions()
         }, config={"configurable": {"session_id": chat_room_id}})
     except Exception as e:
+        remove_latest_message_history(session_id=chat_room_id)
         logging.error(f"An error occurred in llm_reply_inappropriate_chat. error: {e}")
         notify_llm_error("llm_reply_inappropriate_chat", question, chat_room_id, e)
 
