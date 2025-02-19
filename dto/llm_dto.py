@@ -49,8 +49,8 @@ class TarotAnswerDto(BaseModel):
     advice: str = Field(description="타로 카드를 기반으로 조언을 제공합니다.",
                         example="지금은 과거의 상처를 치유하고, 자신을 돌아보는 시간이 필요할 것 같아. 그 사람과의 재회를 원한다면, 서로의 감정을 솔직하게 나누고, 새로운 관계를 만들어가는 것이 중요해. 변화는 두려울 수 있지만, 그 속에서 새로운 가능성을 찾아보면 좋겠어냥! 🌟💕")
     summary_of_description_of_card: str = Field(
-        description="타로 카드의 의미를 한 문장으로 요약합니다. 단순히 카드의 이름만을 요약하지 않고, 의미를 포함해야 합니다.")
-    summary_of_analysis: str = Field(description="질문에 답변한 내용을 한 문장으로 요약합니다. 단순히 description_of_card 내용을 되풀이 하지 않고, 새롭게 요약해야 합니다.")
+        description="타로 카드의 의미를 한 문장으로 요약합니다. 단순히 카드의 이름만을 요약하거나 description_of_card 내용을 되풀이 하지 않고, 의미를 포함해야 합니다. 답변에 \",(comma)\"를 사용하지 않습니다.",)
+    summary_of_analysis: str = Field(description="질문에 답변한 내용을 한 문장으로 요약합니다. 단순히 답변을 되풀이 하지 않고, 새롭게 요약해야 합니다.")
     summary_of_advice: str = Field(description="타로 카드를 기반으로 제공한 조언을 한 문장으로 요약합니다. 단순히 조언을 되풀이 하지 않고, 새롭게 요약해야 합니다.")
     comprehensive_summary: str = Field(description="질문에 대한 답변과 조언을 함께 요약합니다. 요약은 한 문장으로 작성해야 하며, 답변과 조언을 모두 포함해야 합니다.")
 
