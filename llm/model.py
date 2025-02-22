@@ -9,7 +9,7 @@ from llm.chat_history import get_history_chain, remove_latest_message_history, g
 from notification.discord_notification import notify_llm_error
 from prompt.prompt import get_history_prompt_template, classify_chat_type_prompt, reply_general_question_prompt, \
     reply_inappropriate_question_prompt, reply_tarot_question_prompt, reply_question_question_prompt, \
-    follow_up_question_prompt, get_basic_prompt_template, summarize_question_prompt
+    follow_up_question_prompt, get_basic_prompt_template, summarize_question_prompt, easteregg_prompt
 
 llm_4o = ChatOpenAI(
     model="gpt-4o",
@@ -80,10 +80,11 @@ def llm_reply_tarot_chat(
         tarot_card: TarotCard
 ):
     parser = PydanticOutputParser(pydantic_object=TarotAnswerDto)
-    chain = get_history_prompt_template(reply_tarot_question_prompt()) | llm_4o_mini
-    history_chain = get_history_chain(chain) | parser
     latest_question = get_latest_question(session_id=chat_room_id)
-
+    prompt = reply_tarot_question_prompt() if 'DDD' not in latest_question.content else easteregg_prompt()
+    chain = get_history_prompt_template(prompt) | llm_4o_mini
+    history_chain = get_history_chain(chain) | parser
+    print(prompt)
     try:
         return history_chain.invoke({
             "question": f"""
