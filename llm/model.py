@@ -84,7 +84,6 @@ def llm_reply_tarot_chat(
     prompt = reply_tarot_question_prompt() if 'DDD' not in latest_question.content else easteregg_prompt()
     chain = get_history_prompt_template(prompt) | llm_4o_mini
     history_chain = get_history_chain(chain) | parser
-    print(prompt)
     try:
         return history_chain.invoke({
             "question": f"""
